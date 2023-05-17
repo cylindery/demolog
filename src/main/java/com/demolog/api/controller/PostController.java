@@ -1,6 +1,5 @@
 package com.demolog.api.controller;
 
-import com.demolog.api.domain.Post;
 import com.demolog.api.request.PostCreate;
 import com.demolog.api.response.PostResponse;
 import com.demolog.api.service.PostService;
