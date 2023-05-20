@@ -3,6 +3,7 @@ package com.demolog.api.service;
 import com.demolog.api.domain.Post;
 import com.demolog.api.repository.PostRepository;
 import com.demolog.api.request.PostCreate;
+import com.demolog.api.request.PostEdit;
 import com.demolog.api.request.PostSearch;
 import com.demolog.api.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,6 +95,53 @@ class PostServiceTest {
         // then
         assertEquals(10L, posts.size());
         assertEquals("foo19", posts.get(0).getTitle());
+    }
+
+    @Test
+    @DisplayName("글 제목 수정")
+    void test4() {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정 제목")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertEquals("수정 제목", changedPost.getTitle());
+    }
+
+    @Test
+    @DisplayName("글 내용 수정")
+    void test5() {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목")
+                .content("수정 내용")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertEquals("수정 내용", changedPost.getContent());
     }
 
 }

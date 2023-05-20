@@ -1,6 +1,7 @@
 package com.demolog.api.controller;
 
 import com.demolog.api.request.PostCreate;
+import com.demolog.api.request.PostEdit;
 import com.demolog.api.request.PostSearch;
 import com.demolog.api.response.PostResponse;
 import com.demolog.api.service.PostService;
@@ -33,4 +34,8 @@ public class PostController {
         return postService.getList(postSearch);
     }
 
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
+        postService.edit(postId, request);
+    }
 }
