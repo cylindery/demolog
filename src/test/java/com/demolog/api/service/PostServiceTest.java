@@ -1,6 +1,7 @@
 package com.demolog.api.service;
 
 import com.demolog.api.domain.Post;
+import com.demolog.api.exception.PostNotFound;
 import com.demolog.api.repository.PostRepository;
 import com.demolog.api.request.PostCreate;
 import com.demolog.api.request.PostEdit;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PostServiceTest {
@@ -160,6 +160,59 @@ class PostServiceTest {
 
         // then
         assertEquals(0, postRepository.count());
+    }
+
+    @Test
+    @DisplayName("글 1개 조회 - 존재하지 않는 글")
+    void test7() {
+        // given
+        Post requestPost = Post.builder()
+                .title("처음 제목")
+                .content("처음 내용")
+                .build();
+        postRepository.save(requestPost);
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.get(requestPost.getId() + 1L);
+        });
+    }
+
+    @Test
+    @DisplayName("글 수정 - 존재하지 않는 글")
+    void test8() {
+        // given
+        Post post = Post.builder()
+                .title("처음 제목")
+                .content("처음 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title(null)
+                .content("수정 내용")
+                .build();
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.edit(post.getId() + 1L, postEdit);
+        });
+    }
+
+    @Test
+    @DisplayName("글 1개 삭제 - 존재하지 않는 글")
+    void test9() {
+        // given
+        Post requestPost = Post.builder()
+                .title("처음 제목")
+                .content("처음 내용")
+                .build();
+        postRepository.save(requestPost);
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.delete(requestPost.getId() + 1L);
+        });
     }
 
 }
