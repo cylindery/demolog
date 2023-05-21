@@ -144,4 +144,28 @@ class PostServiceTest {
         assertEquals("수정 내용", changedPost.getContent());
     }
 
+    @Test
+    @DisplayName("글 수정 시 null 값을 넣어도 데이터가 변하지 않아야 한다.")
+    void test6() {
+        // given
+        Post post = Post.builder()
+                .title("처음 제목")
+                .content("처음 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title(null)
+                .content("수정 내용")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertEquals("처음 제목", changedPost.getTitle());
+    }
+
 }
