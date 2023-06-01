@@ -20,9 +20,11 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request) {
-        request.validate();
-        postService.write(request);
+    public void post(@RequestBody @Valid PostCreate request, @RequestHeader String authorization) {
+        if (authorization.equals("juwonju")) {
+            request.validate();
+            postService.write(request);
+        }
     }
 
     @GetMapping("/posts/{postId}")
